@@ -1,3 +1,5 @@
+import 'package:blog_app/auth/authbackend/authmodel.dart';
+import 'package:blog_app/users/user.dart';
 import 'package:flutter/material.dart';
 
 import 'auth/ui/welcomepage.dart';
@@ -24,10 +26,7 @@ class _BuildBottomNavigationState extends State<BuildBottomNavigation> {
   Widget getBody() {
   List<Widget> pages = [
     const WelcomePage(),
-    Container(
-      alignment: Alignment.center,
-      child: const Text("Users",style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold),),
-    ),
+    const UserList(),
     Container(
       alignment: Alignment.center,
       child: const Text("Messages",style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold),),

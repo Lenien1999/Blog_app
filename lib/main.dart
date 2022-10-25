@@ -1,7 +1,7 @@
 // ignore_for_file: unused_import
 
 import 'package:blog_app/auth/ui/login.dart';
-import 'package:blog_app/blog_category/latest/addlatest.dart';
+import 'package:blog_app/blog_category/latest/addblog.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
       
         primarySwatch: Colors.blue,
       ),
-      home: const WelcomePage(),
+      home: const Login(),
     );
   }
 }

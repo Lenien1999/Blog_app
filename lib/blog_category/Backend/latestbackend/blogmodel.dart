@@ -2,13 +2,13 @@
 
 // To parse this JSON data, do
 //
-//     final LatestModel = LatestModelFromJson(jsonString);
+//     final BlogModel = BlogModelFromJson(jsonString);
 
 // ignore_for_file: non_constant_identifier_names
 
  
 
-class LatestModel {
+class BlogModel {
 
   
     int ?id;
@@ -18,7 +18,7 @@ class LatestModel {
      String? date;
     String ?image;
     String ?content;
-    LatestModel({
+    BlogModel({
         this.id,
         this.feature,
         this.headline,
@@ -29,7 +29,7 @@ class LatestModel {
     });
 
 
-    factory LatestModel.fromJson(Map<String, dynamic> json) => LatestModel(
+    factory BlogModel.fromJson(Map<String, dynamic> json) => BlogModel(
         id: json["id"],
         feature: json["feature"],
         title: json["title"],

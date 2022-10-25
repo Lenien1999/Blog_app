@@ -48,7 +48,7 @@ dependencies:
   shared_preferences: 
   fluttertoast: 
   image_picker:
-  get:
+  flutter_slidable:
 
 dev_dependencies:
   flutter_test:

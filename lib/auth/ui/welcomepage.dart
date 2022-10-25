@@ -1,13 +1,14 @@
-// ignore_for_file: non_constant_identifier_names
+// ignore_for_file: non_constant_identifier_names, prefer_const_constructors
 
-import 'package:blog_app/blog_category/Backend/latestbackend/latestmodel.dart';
-import 'package:blog_app/blog_category/latest/latestnews.dart';
+import 'package:blog_app/blog_category/latest/popularnews.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
-
-import '../../blog_category/latest/addlatest.dart';
+import '../../blog_category/Backend/latestbackend/blogmodel.dart';
+import '../../blog_category/Backend/latestbackend/blogcontroller.dart';
+import '../../blog_category/latest/addblog.dart';
 import '../../blog_category/news/news.dart';
 
 class WelcomePage extends StatefulWidget {
@@ -19,8 +20,9 @@ class WelcomePage extends StatefulWidget {
 
 // ignore: duplicate_ignore
 class _WelcomePageState extends State<WelcomePage> {
-  DateTime date = DateTime.now();
-  final mydate = DateFormat.yMEd();
+  final date = DateFormat.yMMMd().format(DateTime.now());
+  final selecteddate = DateFormat.yMMMd().format(DateTime.now());
+  BlogController blogController = BlogController();
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +35,7 @@ class _WelcomePageState extends State<WelcomePage> {
           floatingActionButton: FloatingActionButton(
             onPressed: () {
               Navigator.push(context, MaterialPageRoute(builder: (__) {
-                return const AddLatest();
+                return const AddBlog();
               }));
             },
             backgroundColor: Colors.redAccent,
@@ -41,31 +43,25 @@ class _WelcomePageState extends State<WelcomePage> {
           ),
           appBar: AppBar(
             toolbarHeight: 70,
-             backgroundColor: Colors.redAccent,
-        iconTheme: const IconThemeData(color: Colors.white),
-             
+            backgroundColor: Colors.redAccent,
+            iconTheme: const IconThemeData(color: Colors.white),
             actions: [
               Padding(
                 padding: const EdgeInsets.only(top: 20),
                 child: IconButton(
                     onPressed: () {},
-                    icon: const Icon(Icons.search,
-                        color:Colors.white)),
+                    icon: const Icon(Icons.search, color: Colors.white)),
               ),
               Padding(
-                padding: const EdgeInsets.only(left: 20.0, top: 20),
-                child: IconButton(
-                    onPressed: () {},
-                    icon: const Icon(Icons.menu,
-                        color: Colors.white))
-              )
+                  padding: const EdgeInsets.only(left: 20.0, top: 20),
+                  child: IconButton(
+                      onPressed: () {},
+                      icon: const Icon(Icons.menu, color: Colors.white)))
             ],
             leading: const Padding(
               padding: EdgeInsets.only(left: 20, top: 20),
               child: CircleAvatar(
-                  radius: 40,
-                  backgroundColor: Colors.white,
-                  child: Text("A")),
+                  radius: 40, backgroundColor: Colors.white, child: Text("A")),
             ),
             bottom: const TabBar(
               labelColor: Colors.white,
@@ -92,7 +88,7 @@ class _WelcomePageState extends State<WelcomePage> {
           ),
           body: TabBarView(
             children: [
-              Column(
+              ListView(
                 children: [
                   BuildTopBar(textleft: "$date", text: "Latest News"),
                   CarouselSlider(
@@ -164,7 +160,7 @@ class _WelcomePageState extends State<WelcomePage> {
                           ],
                         ),
                       ]),
-                      BuildTopBar(textleft: "See All", text: "Popular Topics"),
+                  BuildTopBar(textleft: "See All", text: "Popular Topics"),
                   BuildLatestNews(),
                 ],
               ),
@@ -178,85 +174,141 @@ class _WelcomePageState extends State<WelcomePage> {
   }
 
   BuildLatestNews() {
-    return StreamBuilder<List<LatestModel>>(
-        stream: readLatest(),
+    return StreamBuilder<List<BlogModel>>(
+        stream: readPopular(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return Text("Something went wrong ${snapshot.error}");
           } else if (snapshot.hasData) {
             return Column(
                 children: snapshot.data!.map<Widget>(
-              (latest) {
-                
+              (popular) {
                 return Padding(
                   padding: const EdgeInsets.all(10.0),
-                  child: SingleChildScrollView(
-                      child: InkWell(
+                  child: InkWell(
                     onTap: () {
                       Navigator.push(context,
                           MaterialPageRoute(builder: (context) {
-                        return LatestNews(latest: latest);
+                        return PopularNews(
+                          popular: popular,
+                        );
                       }));
                     },
-                    child: Container(
-                      height: 170,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                          color: const Color.fromARGB(255, 243, 210, 210),
-                          borderRadius: BorderRadius.circular(19)),
-                      child: Row(children: [
-                        Container(
-                          margin:
-                              const EdgeInsets.only(left: 10, top: 7, bottom: 7),
-                          decoration: BoxDecoration(
-                              color: Colors.redAccent,
-                              image: const DecorationImage(
-                                  image: AssetImage('assets/images/security.jpg'),
-                                  fit: BoxFit.cover),
-                              borderRadius: BorderRadius.circular(9)),
-
-                          width: 100,
-                          // child: Image.asset("name")
-                        ),
+                    child: Slidable(
+                      
+                      endActionPane:
+                          ActionPane(motion: BehindMotion(), children: [
                         Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.all(18.0),
-                            child: Column(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                // ignore: prefer_const_literals_to_create_immutables
-                                children: [
-                                  Text(
-                                    "${latest.title}",
-                                    style: const TextStyle(
-                                      color: Colors.redAccent,
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w400,
-                                    ),
-                                  ),
-                                  Text(
-                                    "${latest.headline}",
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 3,
-                                    style: const TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w400,
-                                    ),
-                                  ),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceAround,
-                                    children: [
-                                      const Text("By Dr. Aminu"),
-                                      Text("${latest.date}")
-                                    ],
-                                  )
-                                ]),
+                          child: Align(
+                            alignment: Alignment.centerRight,
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.push(context,
+                                    MaterialPageRoute(builder: (__) {
+                              return    AddBlog();
+                                }));
+                              },
+                              borderRadius: BorderRadius.circular(16),
+                              child: Container(
+                                  alignment: Alignment.center,
+                                  width: 24 * 4, // space for actionPan
+                                  decoration: BoxDecoration(
+                                      color: Color(0xFF7BC043),
+                                      borderRadius: BorderRadius.circular(16)),
+                                  child: Icon(
+                                    Icons.person_pin_circle,
+                                    color: Colors.white,
+                                  )),
+                            ),
                           ),
                         )
                       ]),
+                      startActionPane:
+                          ActionPane(motion: BehindMotion(), children: [
+                        Expanded(
+                          child: Align(
+                            alignment: Alignment.centerRight,
+                            child: InkWell(
+                              onTap: () {
+                                blogController.deleteBlog();
+                              },
+                              borderRadius: BorderRadius.circular(16),
+                              child: Container(
+                                  alignment: Alignment.center,
+                                  width: 24 * 4, // space for actionPan
+                                  decoration: BoxDecoration(
+                                      color: Colors.redAccent,
+                                      borderRadius: BorderRadius.circular(16)),
+                                  child: Icon(
+                                    Icons.delete,
+                                    color: Colors.white,
+                                  )),
+                            ),
+                          ),
+                        )
+                      ]),
+                      child: Container(
+                        height: 170,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                            color: const Color.fromARGB(255, 243, 210, 210),
+                            borderRadius: BorderRadius.circular(19)),
+                        child: Row(children: [
+                          Container(
+                            margin: const EdgeInsets.only(
+                                left: 10, top: 7, bottom: 7),
+                            decoration: BoxDecoration(
+                                color: Colors.redAccent,
+                                image: const DecorationImage(
+                                    image: AssetImage(
+                                        'assets/images/security.jpg'),
+                                    fit: BoxFit.cover),
+                                borderRadius: BorderRadius.circular(9)),
+
+                            width: 100,
+                            // child: Image.asset("name")
+                          ),
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.all(18.0),
+                              child: Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  // ignore: prefer_const_literals_to_create_immutables
+                                  children: [
+                                    Text(
+                                      "${popular.title}",
+                                      style: const TextStyle(
+                                        color: Colors.redAccent,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                    ),
+                                    Text(
+                                      "${popular.headline}",
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 3,
+                                      style: const TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                    ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceAround,
+                                      children: [
+                                        const Text("By Dr. Aminu"),
+                                        Text(popular.date.toString())
+                                      ],
+                                    )
+                                  ]),
+                            ),
+                          )
+                        ]),
+                      ),
                     ),
-                  )),
+                  ),
                 );
               },
             ).toList());
@@ -266,16 +318,13 @@ class _WelcomePageState extends State<WelcomePage> {
             );
           }
         });
- 
- 
   }
 
-  Stream<List<LatestModel>> readLatest() => FirebaseFirestore.instance
+  Stream<List<BlogModel>> readPopular() => FirebaseFirestore.instance
       .collection('Popular')
       .snapshots()
-      .map((snapshot) => snapshot.docs
-          .map((doc) => LatestModel.fromJson(doc.data()))
-          .toList());
+      .map((snapshot) =>
+          snapshot.docs.map((doc) => BlogModel.fromJson(doc.data())).toList());
 
   Padding BuildTopBar({
     required String text,

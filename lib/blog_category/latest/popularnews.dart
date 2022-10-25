@@ -1,12 +1,14 @@
 // ignore_for_file: prefer_const_constructors
 
-import 'package:blog_app/blog_category/Backend/latestbackend/latestmodel.dart';
+
 import 'package:flutter/material.dart';
 
-class LatestNews extends StatelessWidget {
-  final LatestModel latest;
+import '../Backend/latestbackend/blogmodel.dart';
+
+class PopularNews extends StatelessWidget {
+  final BlogModel popular;
   // ignore: use_key_in_widget_constructors
-  const LatestNews({required this.latest});
+  const PopularNews({required this.popular,});
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +18,7 @@ class LatestNews extends StatelessWidget {
         iconTheme: IconThemeData(color: Colors.white),
         automaticallyImplyLeading: true,
         centerTitle: true,
-        title: Text(latest.title.toString()),
+        title: Text(popular.title.toString()),
         elevation: 0,
         actions: [
           IconButton(
@@ -30,7 +32,7 @@ class LatestNews extends StatelessWidget {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 15),
               child: Text(
-                "${latest.headline}",
+                "${popular.headline}",
                 maxLines: 3,
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
@@ -55,7 +57,7 @@ class LatestNews extends StatelessWidget {
                 ),
                 Padding(
                   padding: const EdgeInsets.all(18.0),
-                  child: Text("${latest.content }",
+                  child: Text("${popular.content }",
                     maxLines: 80,
                     textAlign: TextAlign.justify,
                     style: TextStyle(

@@ -1,8 +1,10 @@
-import 'package:blog_app/blog_category/Backend/latestbackend/latestmodel.dart';
+
 import 'package:flutter/material.dart';
+
+import '../Backend/latestbackend/blogmodel.dart';
 class ReadNews extends StatelessWidget {
-  final LatestModel latest;
-  const ReadNews({required this.latest , Key? key}) : super(key: key);
+  final BlogModel news;
+  const ReadNews({required this.news , Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -12,7 +14,7 @@ class ReadNews extends StatelessWidget {
         iconTheme: const IconThemeData(color: Colors.white),
         automaticallyImplyLeading: true,
         centerTitle: true,
-        title: Text(latest.title.toString()),
+        title: Text(news.title.toString()),
         elevation: 0,
         actions: [
           IconButton(
@@ -26,7 +28,7 @@ class ReadNews extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15),
               child: Text(
-                "${latest.headline}",
+                "${news.headline}",
                 maxLines: 3,
                 style: const TextStyle(
                   fontWeight: FontWeight.bold,
@@ -51,7 +53,7 @@ class ReadNews extends StatelessWidget {
                 ),
                 Padding(
                   padding: const EdgeInsets.all(18.0),
-                  child: Text("${latest.content }",
+                  child: Text("${news.content }",
                     maxLines: 80,
                     textAlign: TextAlign.justify,
                     style: const TextStyle(

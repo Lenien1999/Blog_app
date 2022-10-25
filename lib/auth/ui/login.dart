@@ -27,13 +27,16 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Color.fromARGB(227, 218, 204, 204),
+       
         body: Center(
-          child: ListView(shrinkWrap: true, children: [
-            const CircleAvatar(
-                radius: 70,
-                backgroundColor: Color.fromARGB(255, 175, 18, 18),
-                child: Icon(Icons.person_outlined, size: 60)),
+          child: ListView(
+            
+            shrinkWrap: true, children: [
+              Image.asset('assets/images/blog.jpg', ),
+            // const CircleAvatar(
+            //     radius: 70,
+            //     backgroundColor: Color.fromARGB(255, 175, 18, 18),
+            //     child: Icon(Icons.person_outlined, size: 60)),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 40),
               child: RoundedInputField(

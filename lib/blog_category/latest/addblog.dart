@@ -2,20 +2,20 @@
 
 import 'dart:io';
 
-import 'package:blog_app/blog_category/Backend/latestbackend/latestcontroller.dart';
+import 'package:blog_app/blog_category/Backend/latestbackend/blogcontroller.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
 import '../../auth/ui/contant/roundedbutton.dart';
-import '../Backend/latestbackend/latestmodel.dart';
+import '../Backend/latestbackend/blogmodel.dart';
 
-class AddLatest extends StatefulWidget {
-  const AddLatest({Key? key}) : super(key: key);
+class AddBlog extends StatefulWidget {
+  const AddBlog({Key? key}) : super(key: key);
 
   @override
-  State<AddLatest> createState() => _AddLatestState();
+  State<AddBlog> createState() => _AddBlogState();
 }
 
 final heading = TextEditingController();
@@ -24,19 +24,19 @@ final title=TextEditingController();
 
 DateTime _selectedDate = DateTime.now();
 String _selectedfeature = "none";
-List<String> repeatlist = ["Latest", "Popular", "News", "monthly"];
+List<String> repeatlist = ["Latest", "Popular", "News"];
    File? imageFile;
  
-LatestController latestController=LatestController();
+ BlogController blogController=BlogController();
   
 
-class _AddLatestState extends State<AddLatest> {
+class _AddBlogState extends State<AddBlog> {
   
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Add Latest News"),
+        title: Text("Add Blog "),
         backgroundColor: Colors.redAccent,
         centerTitle: true,
       ),
@@ -111,18 +111,18 @@ class _AddLatestState extends State<AddLatest> {
        Padding(
          padding: const EdgeInsets.all(28.0),
          child: RoundedButton(text: "Submit", press: (){
-          final latest=LatestModel(
-             
+          final latest=BlogModel(
+            
             content: content.text,
             title:title.text,
             image: imageFile.toString(),
-            date: _selectedDate.toString(),
+            date: DateFormat.yMd().format(_selectedDate) ,
             feature:_selectedfeature,
             headline: heading.text,
 
             
           );
-          latestController.insertlatest(latest,context);
+          blogController.insertBlog(latest,context);
          }),
        )
       ]),
@@ -176,6 +176,7 @@ class _AddLatestState extends State<AddLatest> {
                     color: Color.fromARGB(255, 54, 51, 51),
                   )),
                   decoration: InputDecoration(
+                    contentPadding: EdgeInsets.all(8),
                     fillColor: Color.fromARGB(255, 54, 51, 51),
                     hintText: hint,
                     border:InputBorder.none,
@@ -199,12 +200,15 @@ class _AddLatestState extends State<AddLatest> {
   }
 
   _getdatefromuser() async {
+     
     DateTime? pickedate = await showDatePicker(
         context: context,
         initialDate: DateTime.now(),
         firstDate: DateTime(2015),
         lastDate: DateTime(2121));
+        
     if (pickedate != null) {
+      
       setState(() {
         _selectedDate = pickedate;
       });
