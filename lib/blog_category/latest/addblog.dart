@@ -68,6 +68,8 @@ class _AddBlogState extends State<AddBlog> {
                         .toList()),
                 title: "Features",
                 hint: "$_selectedfeature   "),
+           
+           
             Myinputfield(
                 controller: title, title: "Title", hint: "Enter the title"),
             Myinputfield(
@@ -197,6 +199,8 @@ class _AddBlogState extends State<AddBlog> {
         )
       ]),
     );
+  
+  
   }
 
   _getdatefromuser() async {

@@ -1,9 +1,12 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:blog_app/auth/authbackend/authmodel.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+
+import '../../bottomnavigation.dart';
 
 class AuthController {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -21,8 +24,13 @@ class AuthController {
     }
   }
 
-  Future login(Users users) async {
+  Future login(Users users, BuildContext context) async {
     try {
+return await FirebaseAuth.instance.signInWithEmailAndPassword(
+    email: "${users.username}",
+    password: "${users.password}"
+  ).then((value) =>   route(context));
+
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         registerToast('No user found for that email.');
@@ -40,6 +48,35 @@ class AuthController {
         timeInSecForIosWeb: 2,
         backgroundColor:
             toast == "Register sucessfull" ? Colors.green : Colors.red,
-        textColor: Colors.white);
+        textColor: Color.fromARGB(255, 202, 193, 193));
   }
+   void route(BuildContext context) {
+    User? user = FirebaseAuth.instance.currentUser;
+    var kk = FirebaseFirestore.instance
+            .collection('users')
+            .doc(user!.uid)
+            .get()
+            .then((DocumentSnapshot documentSnapshot) {
+      if (documentSnapshot.exists) {
+        if (documentSnapshot.get('role') == "Admin") {
+           Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) =>  BuildBottomNavigation()
+          ),
+        );
+        }else{
+          Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => BuildBottomNavigation()
+          ),
+        );
+        }
+      } else {
+        print('Document does not exist on the database');
+      }
+    });
+  }
+
 }

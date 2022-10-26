@@ -2,6 +2,8 @@
 
 import 'package:blog_app/auth/ui/contant/roundedbutton.dart';
 import 'package:blog_app/auth/ui/registration.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -66,12 +68,8 @@ class _LoginState extends State<Login> {
                     } else if (password.text.isEmpty) {
                       registerToast("Please Enter Password");
                     } else {
-                      authController.login(details).then((value) {
-                        return Navigator.push(context,
-                            MaterialPageRoute(builder: (__) {
-                          return BuildBottomNavigation();
-                        }));
-                      });
+                      authController.login(details, context);
+                     
                     }
                   }),
             ),
@@ -125,12 +123,13 @@ class _LoginState extends State<Login> {
         textColor: Colors.white);
   }
 
-  Future setSP(Users user) async {
-    final SharedPreferences sp = await _pref;
+ 
+  // Future setSP(Users user) async {
+  //   final SharedPreferences sp = await _pref;
 
-    sp.setString("user_id", "${user.id}");
-    sp.setString("fullname", user.fullname ?? "");
-    sp.setString("email", user.username ?? "");
-    sp.setString("password", user.password ?? "");
-  }
+  //   sp.setString("user_id", "${user.id}");
+  //   sp.setString("fullname", user.fullname ?? "");
+  //   sp.setString("email", user.username ?? "");
+  //   sp.setString("password", user.password ?? "");
+  // }
 }
